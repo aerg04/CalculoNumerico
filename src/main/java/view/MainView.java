@@ -4,19 +4,99 @@
  */
 package view;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
 /**
  *
  * @author DELL
  */
 public class MainView extends javax.swing.JFrame {
-
+    private JFreeChart chart1;
+    private JFreeChart chart2;
+    private JFreeChart chart3;
+    private ChartPanel chartPanel1;
+    private ChartPanel chartPanel2;
+    private ChartPanel chartPanel3;
     /**
      * Creates new form MainView
      */
     public MainView() {
         initComponents();
+        this.jPanel4.setLayout(new BorderLayout());
+        this.jPanel5.setLayout(new BorderLayout());
+        this.jPanel6.setLayout(new BorderLayout());
+        //si se cambia nombre hay que estar pendiente en el metodo createChart()
+        chartPanel1 = this.createChart("Posición en funcion del tiempo", "Tiempo (t)", "Posición");
+        chartPanel2 = this.createChart("Voltaje", "Tiempo (t)", "Voltaje");
+        chartPanel3 = this.createChart("Corriente", "Tiempo (t)", "Corriente");
+        jPanel4.add(chartPanel1, BorderLayout.CENTER);
+        jPanel5.add(chartPanel2, BorderLayout.CENTER);
+        jPanel6.add(chartPanel3, BorderLayout.CENTER);
+        this.setResizable(false);
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
     }
+    
+    public ChartPanel createChart(String title,String xtitle,String ytitle){
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                title,
+                xtitle,
+                ytitle,
+                this.createDataset(),
+                PlotOrientation.VERTICAL,
+                true, true, false);
+        if (title.contains("Posición")) {
+            chart1 = chart;
+        } else if (title.contains("Voltaje")) {
+            chart2 = chart;
+        } else if (title.contains("Corriente")) {
+            chart3 = chart;
+        }
+        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(689, 425));
+        return chartPanel;
+        
+    }
+    
+    public void updateDataset1(XYSeriesCollection newDataset) {
+        JFreeChart chart = chartPanel1.getChart();
+        XYPlot plot = chart.getXYPlot();
+        plot.setDataset(newDataset);
+        chartPanel1.revalidate();
+        chartPanel1.repaint();
+    }
+    public void updateDataset2(XYSeriesCollection newDataset) {
+        JFreeChart chart = chartPanel2.getChart();
+        XYPlot plot = chart.getXYPlot();
+        plot.setDataset(newDataset);
+        chartPanel2.revalidate();
+        chartPanel2.repaint();
+    }
+    public void updateDataset3(XYSeriesCollection newDataset) {
+        JFreeChart chart = chartPanel3.getChart();
+        XYPlot plot = chart.getXYPlot();
+        plot.setDataset(newDataset);
+        chartPanel3.revalidate();
+        chartPanel3.repaint();
+    }
+    
+    private XYSeriesCollection createDataset() {
+        XYSeries series = new XYSeries("Series1");
+        series.add(0, 0);
 
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series);
+        return dataset;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -26,21 +106,151 @@ public class MainView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        jTabbedPane3 = new javax.swing.JTabbedPane();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jTabbedPane2 = new javax.swing.JTabbedPane();
+        jPanel3 = new javax.swing.JPanel();
+        theta0 = new javax.swing.JTextField();
+        t0 = new javax.swing.JTextField();
+        omega = new javax.swing.JTextField();
+        lambda = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 685, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 373, Short.MAX_VALUE)
+        );
+
+        jTabbedPane3.addTab("tab1", jPanel5);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 685, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 373, Short.MAX_VALUE)
+        );
+
+        jTabbedPane3.addTab("tab2", jPanel6);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane3)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane3)
+        );
+
+        jTabbedPane1.addTab("Parte 1", jPanel1);
+
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        theta0.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                theta0ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(theta0, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 80, -1));
+        jPanel3.add(t0, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 70, 80, -1));
+
+        omega.setText("1");
+        omega.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                omegaActionPerformed(evt);
+            }
+        });
+        jPanel3.add(omega, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 220, 80, -1));
+
+        lambda.setText("5");
+        jPanel3.add(lambda, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 170, 80, -1));
+
+        jLabel1.setText("tiempo:");
+        jPanel3.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 70, -1, -1));
+
+        jLabel2.setText("theta:");
+        jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, -1, -1));
+
+        jLabel3.setText("omega: ");
+        jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 220, -1, -1));
+
+        jLabel4.setText("lambda: ");
+        jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 170, -1, -1));
+
+        jButton1.setText("Calcular");
+        jPanel3.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 306, 120, -1));
+
+        jTabbedPane2.addTab("Configuración", jPanel3);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 685, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 373, Short.MAX_VALUE)
+        );
+
+        jTabbedPane2.addTab("Grafico", jPanel4);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane2)
+        );
+
+        jTabbedPane1.addTab("Parte 2", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void omegaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_omegaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_omegaActionPerformed
+
+    private void theta0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_theta0ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_theta0ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,5 +288,23 @@ public class MainView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JTabbedPane jTabbedPane3;
+    private javax.swing.JTextField lambda;
+    private javax.swing.JTextField omega;
+    private javax.swing.JTextField t0;
+    private javax.swing.JTextField theta0;
     // End of variables declaration//GEN-END:variables
 }
