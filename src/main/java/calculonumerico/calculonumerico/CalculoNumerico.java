@@ -4,6 +4,9 @@
 
 package calculonumerico.calculonumerico;
 
+import model.MainModel;
+import view.MainView;
+
 /**
  *
  * @author DELL
@@ -11,6 +14,7 @@ package calculonumerico.calculonumerico;
 public class CalculoNumerico {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        MainModel mainmodel = new MainModel();
+        MainView mainView = new MainView(mainmodel);
     }
 }

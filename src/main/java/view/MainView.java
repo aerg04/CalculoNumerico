@@ -6,6 +6,8 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import javax.swing.JOptionPane;
+import model.MainModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -25,24 +27,37 @@ public class MainView extends javax.swing.JFrame {
     private ChartPanel chartPanel1;
     private ChartPanel chartPanel2;
     private ChartPanel chartPanel3;
+    private MainModel mainModel;
     /**
      * Creates new form MainView
      */
-    public MainView() {
+    public MainView(MainModel main) {
         initComponents();
         this.jPanel4.setLayout(new BorderLayout());
         this.jPanel5.setLayout(new BorderLayout());
         this.jPanel6.setLayout(new BorderLayout());
         //si se cambia nombre hay que estar pendiente en el metodo createChart()
-        chartPanel1 = this.createChart("Posición en funcion del tiempo", "Tiempo (t)", "Posición");
+        chartPanel1 = this.createChart("Theta en funcion del tiempo", "Tiempo (t)", "Posición");
         chartPanel2 = this.createChart("Voltaje", "Tiempo (t)", "Voltaje");
         chartPanel3 = this.createChart("Corriente", "Tiempo (t)", "Corriente");
         jPanel4.add(chartPanel1, BorderLayout.CENTER);
         jPanel5.add(chartPanel2, BorderLayout.CENTER);
         jPanel6.add(chartPanel3, BorderLayout.CENTER);
+        mainModel = main;
+        
+        this.updateDataset1(mainModel.createDatasetPendulum(
+                Double.parseDouble(lambda.getText()), 
+                Double.parseDouble(omega.getText()),
+                Double.parseDouble(t0.getText()),
+                Double.parseDouble(theta0.getText())));
+        
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+    }
+    
+    public MainView(){
+        
     }
     
     public ChartPanel createChart(String title,String xtitle,String ytitle){
@@ -53,7 +68,7 @@ public class MainView extends javax.swing.JFrame {
                 this.createDataset(),
                 PlotOrientation.VERTICAL,
                 true, true, false);
-        if (title.contains("Posición")) {
+        if (title.contains("Theta")) {
             chart1 = chart;
         } else if (title.contains("Voltaje")) {
             chart2 = chart;
@@ -168,12 +183,20 @@ public class MainView extends javax.swing.JFrame {
 
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        theta0.setText("0.1");
         theta0.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 theta0ActionPerformed(evt);
             }
         });
         jPanel3.add(theta0, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 80, -1));
+
+        t0.setText("0");
+        t0.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t0ActionPerformed(evt);
+            }
+        });
         jPanel3.add(t0, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 70, 80, -1));
 
         omega.setText("1");
@@ -200,6 +223,11 @@ public class MainView extends javax.swing.JFrame {
         jPanel3.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 170, -1, -1));
 
         jButton1.setText("Calcular");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 306, 120, -1));
 
         jTabbedPane2.addTab("Configuración", jPanel3);
@@ -251,6 +279,23 @@ public class MainView extends javax.swing.JFrame {
     private void theta0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_theta0ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_theta0ActionPerformed
+
+    private void t0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t0ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t0ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        try{
+            this.updateDataset1(mainModel.createDatasetPendulum(
+                    Double.parseDouble(lambda.getText()), 
+                    Double.parseDouble(omega.getText()),
+                    Double.parseDouble(t0.getText()),
+                    Double.parseDouble(theta0.getText())));
+        }catch(NumberFormatException e){
+            javax.swing.JOptionPane.showMessageDialog(null, "error en los campos");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
