@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import org.jfree.chart.ChartFactory;
@@ -13,16 +9,111 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import org.apache.commons.math3.analysis.integration.TrapezoidIntegrator;
+import org.apache.commons.math3.analysis.UnivariateFunction;
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  *
- * @author DELL
+ * @author DELL & Doztor
  */
 public class MainModel {
+    
+    //PARTE 1
+    
+     // Método para calcular la corriente (RK4)
+     public XYSeriesCollection createDatasetCorriente() {
+        double t0 = 0;
+        double i0 = 0;
+        double dt = 0.01;
+        double t_end = 1;
+
+        XYSeries series = new XYSeries("Corriente");
+
+        double t = t0;
+        double i = i0;
+
+        while (t <= t_end) {
+            double[] rkResult = rungeKuttaCorriente(t, i, dt);
+            t = rkResult[0];
+            i = rkResult[1];
+            series.add(t, i);
+        }
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series);
+        return dataset;
+    }
+
+    private double[] rungeKuttaCorriente(double t, double i, double dt) {
+        double k1 = dt * dydtCorriente(t, i);
+        double k2 = dt * dydtCorriente(t + dt / 2.0, i + k1 / 2.0);
+        double k3 = dt * dydtCorriente(t + dt / 2.0, i + k2 / 2.0);
+        double k4 = dt * dydtCorriente(t + dt, i + k3);
+        double i_new = i + (1.0 / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4);
+        double t_new = t + dt;
+        return new double[]{t_new, i_new};
+    }
+
+    private double dydtCorriente(double t, double i) {
+        return (120 * 60 * Math.cos(60 * t) - (1.001803e-4) * i);
+    }
+
+    // Método para calcular el voltaje
+    public XYSeriesCollection createDatasetVoltaje() {
+        double t0 = 0;
+        double i0 = 0;
+        double dt = 0.001;
+        double t_end = 2;
+
+        XYSeries series = new XYSeries("Voltaje");
+
+        double t = t0;
+        double i = i0;
+
+        while (t <= t_end) {
+            double[] rkResult = rungeKuttaCorriente(t, i, dt);
+            t = rkResult[0];
+            i = rkResult[1];
+            double V = calcularVoltaje(t, i);
+            series.add(t, V);
+        }
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series);
+        return dataset;
+    }
+
+    private double calcularVoltaje(double t, double i) {
+        double R_eq = 3 + 1 + 4; // Resistencia equivalente
+        double L_eq = 10e-3 + 10e-3; // Inductancia equivalente
+        double C = 100e-6; // Capacitancia
+
+        double V_R = R_eq * i; // Voltaje en la resistencia
+        double V_L = L_eq * dydtCorriente(t, i); // Voltaje en la inductancia
+        double V_C = (1.0 / C) * integrarCorriente(t, i); // Voltaje en el capacitor
+        return V_R + V_L + V_C;
+    }
+
+    private double integrarCorriente(double t, double i) {
+        // Crear una instancia de TrapezoidIntegrator
+        TrapezoidIntegrator integrator = new TrapezoidIntegrator();
+
+        // Definir la función a integrar (en este caso, una función constante: f(x) = i)
+        UnivariateFunction function = x -> i;
+
+        // Integrar la función en el intervalo [0, t]
+        return integrator.integrate(1000, function, 0, t);
+    }
+
+
+//PARTE 2
     public XYSeriesCollection createDatasetPendulum(double lambdax,double omegax,double t0,double theta) {
         double lambda = lambdax;
         double omega = omegax;

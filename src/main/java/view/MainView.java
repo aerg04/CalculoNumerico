@@ -21,7 +21,7 @@ import org.jfree.data.xy.XYSeriesCollection;
  * @author DELL
  */
 public class MainView extends javax.swing.JFrame {
-    private JFreeChart chart1;
+     private JFreeChart chart1;
     private JFreeChart chart2;
     private JFreeChart chart3;
     private ChartPanel chartPanel1;
@@ -31,30 +31,38 @@ public class MainView extends javax.swing.JFrame {
     /**
      * Creates new form MainView
      */
-    public MainView(MainModel main) {
+public MainView(MainModel main) {
         initComponents();
         this.jPanel4.setLayout(new BorderLayout());
         this.jPanel5.setLayout(new BorderLayout());
         this.jPanel6.setLayout(new BorderLayout());
-        //si se cambia nombre hay que estar pendiente en el metodo createChart()
-        chartPanel1 = this.createChart("Theta en funcion del tiempo", "Tiempo (t)", "Posición");
-        chartPanel2 = this.createChart("Voltaje", "Tiempo (t)", "Voltaje");
-        chartPanel3 = this.createChart("Corriente", "Tiempo (t)", "Corriente");
+
+        // Crear gráficos
+        chartPanel1 = this.createChart("Theta en función del tiempo", "Tiempo (t)", "Posición");
+        chartPanel2 = this.createChart("Voltaje", "Tiempo (t)", "Voltaje (V)");
+        chartPanel3 = this.createChart("Corriente", "Tiempo (t)", "Corriente (A)");
+
         jPanel4.add(chartPanel1, BorderLayout.CENTER);
         jPanel5.add(chartPanel2, BorderLayout.CENTER);
         jPanel6.add(chartPanel3, BorderLayout.CENTER);
+
         mainModel = main;
-        
+
+        // Actualizar datasets
         this.updateDataset1(mainModel.createDatasetPendulum(
-                Double.parseDouble(lambda.getText()), 
+                Double.parseDouble(lambda.getText()),
                 Double.parseDouble(omega.getText()),
                 Double.parseDouble(t0.getText()),
                 Double.parseDouble(theta0.getText())));
-        
+
+        this.updateDataset2(mainModel.createDatasetVoltaje()); // Gráfica de voltaje
+        this.updateDataset3(mainModel.createDatasetCorriente()); // Gráfica de corriente
+
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
+
     
     public MainView(){
         
