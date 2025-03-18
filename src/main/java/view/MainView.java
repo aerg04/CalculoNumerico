@@ -52,8 +52,8 @@ public MainView(MainModel main) {
         this.updateDataset1(mainModel.createDatasetPendulum(
                 Double.parseDouble(lambda.getText()),
                 Double.parseDouble(omega.getText()),
-                Double.parseDouble(t0.getText()),
-                Double.parseDouble(theta0.getText())));
+                Double.parseDouble(theta.getText()),
+                Double.parseDouble(dtheta.getText())));
 
         this.updateDataset2(mainModel.createDatasetVoltaje()); // Gráfica de voltaje
         this.updateDataset3(mainModel.createDatasetCorriente()); // Gráfica de corriente
@@ -137,8 +137,8 @@ public MainView(MainModel main) {
         jPanel2 = new javax.swing.JPanel();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel3 = new javax.swing.JPanel();
-        theta0 = new javax.swing.JTextField();
-        t0 = new javax.swing.JTextField();
+        dtheta = new javax.swing.JTextField();
+        theta = new javax.swing.JTextField();
         omega = new javax.swing.JTextField();
         lambda = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -191,21 +191,21 @@ public MainView(MainModel main) {
 
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        theta0.setText("0.1");
-        theta0.addActionListener(new java.awt.event.ActionListener() {
+        dtheta.setText("0.1");
+        dtheta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                theta0ActionPerformed(evt);
+                dthetaActionPerformed(evt);
             }
         });
-        jPanel3.add(theta0, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 80, -1));
+        jPanel3.add(dtheta, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, 80, -1));
 
-        t0.setText("0");
-        t0.addActionListener(new java.awt.event.ActionListener() {
+        theta.setText("0");
+        theta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t0ActionPerformed(evt);
+                thetaActionPerformed(evt);
             }
         });
-        jPanel3.add(t0, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 70, 80, -1));
+        jPanel3.add(theta, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 70, 80, -1));
 
         omega.setText("1");
         omega.addActionListener(new java.awt.event.ActionListener() {
@@ -218,11 +218,11 @@ public MainView(MainModel main) {
         lambda.setText("5");
         jPanel3.add(lambda, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 170, 80, -1));
 
-        jLabel1.setText("tiempo:");
+        jLabel1.setText("theta:");
         jPanel3.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 70, -1, -1));
 
-        jLabel2.setText("theta:");
-        jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 120, -1, -1));
+        jLabel2.setText("theta/s:");
+        jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 120, -1, -1));
 
         jLabel3.setText("omega: ");
         jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 220, -1, -1));
@@ -284,13 +284,13 @@ public MainView(MainModel main) {
         // TODO add your handling code here:
     }//GEN-LAST:event_omegaActionPerformed
 
-    private void theta0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_theta0ActionPerformed
+    private void dthetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dthetaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_theta0ActionPerformed
+    }//GEN-LAST:event_dthetaActionPerformed
 
-    private void t0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t0ActionPerformed
+    private void thetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thetaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_t0ActionPerformed
+    }//GEN-LAST:event_thetaActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
@@ -298,8 +298,8 @@ public MainView(MainModel main) {
             this.updateDataset1(mainModel.createDatasetPendulum(
                     Double.parseDouble(lambda.getText()), 
                     Double.parseDouble(omega.getText()),
-                    Double.parseDouble(t0.getText()),
-                    Double.parseDouble(theta0.getText())));
+                    Double.parseDouble(theta.getText()),
+                    Double.parseDouble(dtheta.getText())));
         }catch(NumberFormatException e){
             javax.swing.JOptionPane.showMessageDialog(null, "error en los campos");
         }
@@ -341,6 +341,7 @@ public MainView(MainModel main) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField dtheta;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -357,7 +358,6 @@ public MainView(MainModel main) {
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JTextField lambda;
     private javax.swing.JTextField omega;
-    private javax.swing.JTextField t0;
-    private javax.swing.JTextField theta0;
+    private javax.swing.JTextField theta;
     // End of variables declaration//GEN-END:variables
 }

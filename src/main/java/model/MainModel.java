@@ -119,7 +119,7 @@ public class MainModel {
         double omega = omegax;
         double h = 0.01;
         double[] y0 = {theta, t0};
-        double a = t0;
+        double a = 0;
         double b = 10.0;
 
         List<Double> tValues = new ArrayList<>();
