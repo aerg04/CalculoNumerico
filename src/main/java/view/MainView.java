@@ -37,16 +37,17 @@ public MainView(MainModel main) {
         this.jPanel5.setLayout(new BorderLayout());
         this.jPanel6.setLayout(new BorderLayout());
 
-        // Crear gráficos
-        chartPanel1 = this.createChart("Theta en función del tiempo", "Tiempo (t)", "Posición");
-        chartPanel2 = this.createChart("Voltaje", "Tiempo (t)", "Voltaje (V)");
-        chartPanel3 = this.createChart("Corriente", "Tiempo (t)", "Corriente (A)");
+   // Crear gráficas
+        chartPanel1 = this.createChart("Theta en funcion del tiempo", "Tiempo (t)", "Posición");
+        chartPanel2 = this.createChart("Voltaje", "Tiempo (t)", "Voltaje");
+        chartPanel3 = this.createChart("Corriente", "Tiempo (t)", "Corriente");
 
         jPanel4.add(chartPanel1, BorderLayout.CENTER);
         jPanel5.add(chartPanel2, BorderLayout.CENTER);
         jPanel6.add(chartPanel3, BorderLayout.CENTER);
 
         mainModel = main;
+
 
         // Actualizar datasets
         this.updateDataset1(mainModel.createDatasetPendulum(
@@ -55,8 +56,9 @@ public MainView(MainModel main) {
                 Double.parseDouble(theta.getText()),
                 Double.parseDouble(dtheta.getText())));
 
-        this.updateDataset2(mainModel.createDatasetVoltaje()); // Gráfica de voltaje
-        this.updateDataset3(mainModel.createDatasetCorriente()); // Gráfica de corriente
+        // Actualizar gráficas de corriente y voltaje (nuevo)
+        this.updateDataset2(mainModel.createDatasetVoltage(0, 0, 0.001, 2));
+        this.updateDataset3(mainModel.createDatasetCurrent(0, 0, 0.001, 2));
 
         this.setResizable(false);
         this.setLocationRelativeTo(null);

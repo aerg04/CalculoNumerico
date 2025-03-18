@@ -1,20 +1,8 @@
 package model;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import org.apache.commons.math3.analysis.integration.TrapezoidIntegrator;
-import org.apache.commons.math3.analysis.UnivariateFunction;
 
-
-import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,25 +13,24 @@ import java.util.List;
  */
 public class MainModel {
     
-    //PARTE 1
+        // Parámetros del circuito
+    private static final double R_eq = 3 + 1 + 4; // Resistencia equivalente
+    private static final double L_eq = 10e-3 + 10e-3; // Inductancia equivalente
+    private static final double C = 100e-6; // Capacitancia
     
-     // Método para calcular la corriente (RK4)
-     public XYSeriesCollection createDatasetCorriente() {
-        double t0 = 0;
-        double i0 = 0;
-        double dt = 0.01;
-        double t_end = 1;
+    //PARTE 1
 
-        XYSeries series = new XYSeries("Corriente");
-
+    // Nuevo método para calcular la corriente i(t)
+    public XYSeriesCollection createDatasetCurrent(double t0, double i0, double dt, double tEnd) {
+        double[] y = new double[]{i0};
         double t = t0;
-        double i = i0;
 
-        while (t <= t_end) {
-            double[] rkResult = rungeKuttaCorriente(t, i, dt);
-            t = rkResult[0];
-            i = rkResult[1];
-            series.add(t, i);
+        XYSeries series = new XYSeries("Corriente i(t)");
+
+        while (t <= tEnd) {
+            series.add(t, y[0]);
+            y = rungeKutta4thOrderCurrent(t, y, dt);
+            t += dt;
         }
 
         XYSeriesCollection dataset = new XYSeriesCollection();
@@ -51,65 +38,59 @@ public class MainModel {
         return dataset;
     }
 
-    private double[] rungeKuttaCorriente(double t, double i, double dt) {
-        double k1 = dt * dydtCorriente(t, i);
-        double k2 = dt * dydtCorriente(t + dt / 2.0, i + k1 / 2.0);
-        double k3 = dt * dydtCorriente(t + dt / 2.0, i + k2 / 2.0);
-        double k4 = dt * dydtCorriente(t + dt, i + k3);
-        double i_new = i + (1.0 / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4);
-        double t_new = t + dt;
-        return new double[]{t_new, i_new};
-    }
-
-    private double dydtCorriente(double t, double i) {
-        return (120 * 60 * Math.cos(60 * t) - (1.001803e-4) * i);
-    }
-
-    // Método para calcular el voltaje
-    public XYSeriesCollection createDatasetVoltaje() {
-        double t0 = 0;
-        double i0 = 0;
-        double dt = 0.001;
-        double t_end = 2;
-
-        XYSeries series = new XYSeries("Voltaje");
-
+    // Nuevo método para calcular el voltaje V(t)
+    public XYSeriesCollection createDatasetVoltage(double t0, double i0, double dt, double tEnd) {
+        double[] y = new double[]{i0};
         double t = t0;
-        double i = i0;
 
-        while (t <= t_end) {
-            double[] rkResult = rungeKuttaCorriente(t, i, dt);
-            t = rkResult[0];
-            i = rkResult[1];
-            double V = calcularVoltaje(t, i);
-            series.add(t, V);
+        XYSeries seriesCurrent = new XYSeries("Corriente i(t)");
+        XYSeries seriesVoltage = new XYSeries("Voltaje V(t)");
+
+        while (t <= tEnd) {
+            seriesCurrent.add(t, y[0]);
+
+            // Calcular voltaje en el circuito: V(t) = V_R + V_L + V_C
+            double V_R = R_eq * y[0];
+            double V_L = L_eq * dydtCurrent(t, y)[0];
+            double V_C = (1 / C) * integrateCurrent(seriesCurrent, t0, t);
+            seriesVoltage.add(t, V_R + V_L + V_C);
+
+            y = rungeKutta4thOrderCurrent(t, y, dt);
+            t += dt;
         }
 
         XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(series);
+        dataset.addSeries(seriesVoltage);
         return dataset;
     }
 
-    private double calcularVoltaje(double t, double i) {
-        double R_eq = 3 + 1 + 4; // Resistencia equivalente
-        double L_eq = 10e-3 + 10e-3; // Inductancia equivalente
-        double C = 100e-6; // Capacitancia
+ 
+    // Método Runge-Kutta para la corriente i(t)
+    private double[] rungeKutta4thOrderCurrent(double t, double[] y, double dt) {
+        double[] k1 = multiply(dydtCurrent(t, y), dt);
+        double[] k2 = multiply(dydtCurrent(t + dt / 2, add(y, divide(k1, 2))), dt);
+        double[] k3 = multiply(dydtCurrent(t + dt / 2, add(y, divide(k2, 2))), dt);
+        double[] k4 = multiply(dydtCurrent(t + dt, add(y, k3)), dt);
 
-        double V_R = R_eq * i; // Voltaje en la resistencia
-        double V_L = L_eq * dydtCorriente(t, i); // Voltaje en la inductancia
-        double V_C = (1.0 / C) * integrarCorriente(t, i); // Voltaje en el capacitor
-        return V_R + V_L + V_C;
+        return add(y, divide(add(add(k1, multiply(add(k2, k3), 2)), k4), 6));
     }
 
-    private double integrarCorriente(double t, double i) {
-        // Crear una instancia de TrapezoidIntegrator
-        TrapezoidIntegrator integrator = new TrapezoidIntegrator();
+    // Ecuación diferencial para la corriente i(t)
+    private double[] dydtCurrent(double t, double[] y) {
+        double i = y[0];
+        double diDt = (120 * 60 * Math.cos(60 * t) - 1.001803e-4 * i) / 2;
+        return new double[]{diDt};
+    }
 
-        // Definir la función a integrar (en este caso, una función constante: f(x) = i)
-        UnivariateFunction function = x -> i;
-
-        // Integrar la función en el intervalo [0, t]
-        return integrator.integrate(1000, function, 0, t);
+    // Método para integrar la corriente i(t) (usado para V_C)
+    private double integrateCurrent(XYSeries series, double t0, double t) {
+        double integral = 0;
+        for (int i = 1; i < series.getItemCount(); i++) {
+            double dt = series.getX(i).doubleValue() - series.getX(i - 1).doubleValue();
+            double avgCurrent = (series.getY(i).doubleValue() + series.getY(i - 1).doubleValue()) / 2;
+            integral += avgCurrent * dt;
+        }
+        return integral;
     }
 
 
